@@ -2,8 +2,8 @@ package com.program.demo.controller;
 
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,46 +15,68 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.program.demo.entity.Student;
-import com.program.demo.service.StuService;
+import com.program.demo.entity.Teacher;
+import com.program.demo.service.*;
 
 @RestController
 @RequestMapping("/superadmin")
 public class Controller {
 	@Autowired
-	private StuService stuService;
+	private StuService stuService; 
+	private TeacherService teacherService;
 	
-	@RequestMapping(value="/liststu",method = RequestMethod.GET)
-	private Map<String,Object> listStu(){
+	
+	@RequestMapping(value="/stuLogin",method = RequestMethod.GET)
+	private Map<String,Object> stulogin(@RequestBody Student stu){
 		Map<String,Object> modelMap = new HashMap<String,Object>();
-		//查询学生信息
-		List<Student> list = stuService.queryStuList();
-		modelMap.put("queryStu",list);
+		//学生登录
+		Student list = stuService.Login(stu);
+		modelMap.put("StuLogin",list);
 		return modelMap;
 	}
 	
-	@RequestMapping(value = "/insertstu", method = RequestMethod.POST)
-	private Map<String, Object> addStu(@RequestBody Student stu)
+	@RequestMapping(value = "/stuRegister", method = RequestMethod.POST)
+	private Map<String, Object> stuRegister(@RequestBody Student stu)
 			throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> modelMap = new HashMap<String, Object>();
-		// 添加学生信息
-		modelMap.put("success", stuService.insertStu(stu));
+		// 学生注册
+		modelMap.put("success", stuService.Register(stu));
 		return modelMap;
 	}
 	
-	@RequestMapping(value = "/modifystu", method = RequestMethod.POST)
-	private Map<String, Object> modifyStu(@RequestBody Student stu)
+	@RequestMapping(value="/teacherLogin",method = RequestMethod.GET)
+	private Map<String,Object> teacherlogin(@RequestBody Teacher teacher){
+		Map<String,Object> modelMap = new HashMap<String,Object>();
+		//教师登录
+		Teacher list = teacherService.Login(teacher);
+		modelMap.put("TeacherLogin",list);
+		return modelMap;
+	}
+	
+	@RequestMapping(value = "/teacherRegister", method = RequestMethod.POST)
+	private Map<String, Object> TeacherRegister(@RequestBody Teacher teacher)
 			throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> modelMap = new HashMap<String, Object>();
-		// 修改学生信息
-		modelMap.put("success", stuService.modifyStu(stu));
+		// 教师注册
+		modelMap.put("success", teacherService.Register(teacher));
 		return modelMap;
 	}
 	
-	@RequestMapping(value = "/removestu", method = RequestMethod.GET)
-	private Map<String, Object> removeStu(String stuID) {
+	@RequestMapping(value = "/teacherRelease", method = RequestMethod.POST)
+	private Map<String, Object> TeacherRelease(@RequestBody String teacherID,@RequestBody String workName,@RequestBody Date deadline)
+			throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> modelMap = new HashMap<String, Object>();
-		// 删除学生信息
-		modelMap.put("success", stuService.deleteStu(stuID));
+		// 教师发布作业
+		modelMap.put("success", teacherService.Release(teacherID,workName,deadline));
+		return modelMap;
+	}
+	
+	@RequestMapping(value = "/stuUpload", method = RequestMethod.POST)
+	private Map<String, Object> StuUpload(@RequestBody String stuID,@RequestBody String workID,@RequestBody Double size)
+			throws JsonParseException, JsonMappingException, IOException {
+		Map<String, Object> modelMap = new HashMap<String, Object>();
+		// 学生上传作业
+		modelMap.put("success", stuService.Upload(stuID,workID,size));
 		return modelMap;
 	}
 	

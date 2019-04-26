@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.program.demo.dao.TeacherSignDao">
+	<select id="TeacherLogin" resultType="com.program.demo.entity.Teacher">
+		select *
+		from teacher
+		where teacherID=#{teacherID} and password=#{password}
+	</select>
+	<insert id="TeacherRegister" useGeneratedKeys="true" keyProperty="teacherID"
+		keyColumn="teacherID" parameterType="com.program.demo.entity.Teacher">
+		insert into
+		teacher(teacherID,courseName,teacherName,password)
+		values(#{teacherID},#{courseName},#{teacherName},#{password})
+	</insert>
+</mapper>
+
